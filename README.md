@@ -1,7 +1,7 @@
 # Short-Term Stay API
 
 > **SE 4458 – Software Architecture & Design of Modern Large Scale Systems**
-> Midterm Project — Group 2 (Short-Term Stay / Airbnb-like platform)
+> Midterm Project — Short-Term Stay / Airbnb-like platform
 
 Backend REST API built with **Node.js + Express**, **PostgreSQL**, **JWT authentication**, **Swagger UI** documentation, and an **API Gateway middleware**.
 
@@ -11,10 +11,13 @@ Backend REST API built with **Node.js + Express**, **PostgreSQL**, **JWT authent
 
 | Resource | URL |
 |----------|-----|
-| Swagger UI | `https://<your-deployed-url>/api-docs` |
-| Health Check | `https://<your-deployed-url>/api/health` |
+| Swagger UI | `[https://<your-deployed-url>/api-docs](http://short-term-stay-api-env.eba-ewbwm4bi.eu-north-1.elasticbeanstalk.com/api-docs)<img width="470" height="14" alt="image" src="https://github.com/user-attachments/assets/f4b68abf-b3da-4104-b2f5-e062ad1888a6" />
+` |
+| Health Check | `[https://<your-deployed-url>/api/health](http://short-term-stay-api-env.eba-ewbwm4bi.eu-north-1.elasticbeanstalk.com/api/health)<img width="470" height="28" alt="image" src="https://github.com/user-attachments/assets/e95128ec-12cf-4329-b720-ad830a086c63" />
+` |
 
-> Replace `<your-deployed-url>` with your AWS App Runner / Azure App Service URL after deployment.
+> Replace ` https://saqw7ksaed.execute-api.eu-north-1.amazonaws.com/prod<img width="470" height="14" alt="image" src="https://github.com/user-attachments/assets/c9a0d0de-94bc-4d80-8e5b-66463bdd5331" />
+` with your AWS App Runner / Azure App Service URL after deployment.
 
 ---
 
@@ -328,3 +331,8 @@ k6 run load-test/k6/book-stay.js
 ## GitHub Repository
 
 [https://github.com/senasliturk/shorttermstayapi](https://github.com/senasliturk/shorttermstayapi)
+
+---
+
+## Read Me
+For the details please look README-final.pdf
