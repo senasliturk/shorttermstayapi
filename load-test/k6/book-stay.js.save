@@ -1,0 +1,142 @@
+
+/**
+ * k6 Load Test — Book a Stay Endpoint
+ * SE 4458 Midterm — Short-Term Stay API
+ *
+ * Endpoint: POST /api/v1/bookings
+ * Auth: JWT required (re-authenticated per iteration to avoid token expiry)
+ *
+ * Scenarios:
+ *   1. Normal Load  — 20 VUs for 30s
+ *   2. Peak Load    — 50 VUs for 30s
+ *   3. Stress Load  — 100 VUs for 30s
+ *
+ * Run: k6 run book-stay.js
+ */
+
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+import { Trend, Rate, Counter } from 'k6/metrics';
+
+// ── Custom metrics ────────────────────────────────────────────────────────────
+const bookResponseTime = new Trend('book_stay_response_time', true);
+const bookErrors       = new Rate('book_stay_error_rate');
+const bookRequests     = new Counter('book_stay_total_requests');
+
+// ── Test configuration ────────────────────────────────────────────────────────
+export const options = {
+  scenarios: {
+    normal_load: {
+      executor: 'constant-vus',
+      vus: 20,
+      duration: '30s',
+      startTime: '0s',
+      tags: { scenario: 'normal' },
+    },
+    peak_load: {
+      executor: 'constant-vus',
+      vus: 50,
+      duration: '30s',
+      startTime: '40s',
+      tags: { scenario: 'peak' },
+    },
+    stress_load: {
+      executor: 'constant-vus',
+      vus: 100,
+      duration: '30s',
+      startTime: '80s',
+      tags: { scenario: 'stress' },
+    },
+  },
+  thresholds: {
+    book_stay_response_time: ['p(95)<2000'],
+    book_stay_error_rate:    ['rate<0.15'],
+  },
+};
+
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
+
+// ── Helper: get JWT token ─────────────────────────────────────────────────────
+function getToken() {
+  const loginRes = http.post(
+    `${BASE_URL}/api/v1/auth/login`,
+    JSON.stringify({ email: 'test@test.com', password: '123456' }),
+    { headers: { 'Content-Type': 'application/json' } }
+  );
+
+  if (loginRes.status !== 200) return null;
+
+  try {
+    return JSON.parse(loginRes.body).data.token;
+  } catch {
+    return null;
+  }
+}
+
+// ── Main test function ────────────────────────────────────────────────────────
+export default function () {
+  // Re-authenticate each iteration to prevent token expiry under long test runs
+  const token = getToken();
+
+  if (!token) {
+    bookErrors.add(1);
+    sleep(1);
+    return;
+  }
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
+
+  // Use future dates with random offsets to reduce booking conflicts
+  const vuId = __VU;
+  const baseDay = 2026 * 365 + vuId * 7 + Math.floor(Math.random() * 100);
+  const year = 2027;
+  const month = String((vuId % 12) + 1).padStart(2, '0');
+  const day   = String(((vuId * 3 + Math.floor(Math.random() * 28)) % 28) + 1).padStart(2, '0');
+  const endDay = String(parseInt(day) + 3).padStart(2, '0');
+
+  const payload = JSON.stringify({
+    listing_id:  1,           // Assumes at least 1 listing exists in DB
+    date_from:   `${year}-${month}-${day}`,
+    date_to:     `${year}-${month}-${endDay}`,
+    guest_count: 1,
+    guest_names: `Guest-VU${vuId}`,
+  });
+
+  const res = http.post(`${BASE_URL}/api/v1/bookings`, payload, { headers });
+
+  bookResponseTime.add(res.timings.duration);
+  bookRequests.add(1);
+
+  const success = check(res, {
+    'status is 201 or 409': (r) => r.status === 201 || r.status === 409,
+    'response time < 3000ms': (r) => r.timings.duration < 3000,
+    'response is JSON': (r) => r.headers['Content-Type'] && r.headers['Content-Type'].includes('application/json'),
+  });
+
+  bookErrors.add(!success);
+
+  sleep(Math.random() * 0.5 + 0.3);
+}
+
+export function handleSummary(data) {
+  console.log('\n========= Book a Stay Load Test Summary =========');
+  const rt = data.metrics.book_stay_response_time;
+  if (rt) {
+    console.log(`Average Response Time : ${rt.values.avg.toFixed(2)} ms`);
+    console.log(`p95 Response Time     : ${rt.values['p(95)'].toFixed(2)} ms`);
+    console.log(`p99 Response Time     : ${rt.values['p(99)'].toFixed(2)} ms`);
+  }
+  const reqs = data.metrics.http_reqs;
+  if (reqs) {
+    console.log(`Requests/sec          : ${reqs.values.rate.toFixed(2)}`);
+  }
+  const errRate = data.metrics.book_stay_error_rate;
+  if (errRate) {
+    console.log(`Error Rate            : ${(errRate.values.rate * 100).toFixed(2)}%`);
+  }
+  console.log('=================================================\n');
+  return {};
+}

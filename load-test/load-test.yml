@@ -1,0 +1,29 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 20
+      name: "Normal Load (20 VUs)"
+    - duration: 30
+      arrivalRate: 50
+      name: "Peak Load (50 VUs)"
+    - duration: 30
+      arrivalRate: 100
+      name: "Stress Load (100 VUs)"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Query Listings"
+    flow:
+      - get:
+          url: "/api/v1/listings/query?country=Turkey&city=Istanbul&page=1"
+          expect:
+            - statusCode: 200
+  - name: "Health Check"
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
