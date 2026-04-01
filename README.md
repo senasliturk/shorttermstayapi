@@ -11,13 +11,13 @@ Backend REST API built with **Node.js + Express**, **PostgreSQL**, **JWT authent
 
 | Resource | URL |
 |----------|-----|
-| Swagger UI | `[https://<your-deployed-url>/api-docs](http://short-term-stay-api-env.eba-ewbwm4bi.eu-north-1.elasticbeanstalk.com/api-docs)<img width="470" height="14" alt="image" src="https://github.com/user-attachments/assets/f4b68abf-b3da-4104-b2f5-e062ad1888a6" />
+| Swagger UI | `[http://short-term-stay-api-env.eba-ewbwm4bi.eu-north-1.elasticbeanstalk.com/api-docs]
 ` |
-| Health Check | `[https://<your-deployed-url>/api/health](http://short-term-stay-api-env.eba-ewbwm4bi.eu-north-1.elasticbeanstalk.com/api/health)<img width="470" height="28" alt="image" src="https://github.com/user-attachments/assets/e95128ec-12cf-4329-b720-ad830a086c63" />
+| Elastic Beanstalk (Direct API)| `[http://short-term-stay-api-env.eba-ewbwm4bi.eu-north-1.elasticbeanstalk.com/api/health]
+` |
+| AWS API Gateway| `[https://saqw7ksaed.execute-api.eu-north-1.amazonaws.com/prod]
 ` |
 
-> Replace ` https://saqw7ksaed.execute-api.eu-north-1.amazonaws.com/prod<img width="470" height="14" alt="image" src="https://github.com/user-attachments/assets/c9a0d0de-94bc-4d80-8e5b-66463bdd5331" />
-` with your AWS App Runner / Azure App Service URL after deployment.
 
 ---
 
