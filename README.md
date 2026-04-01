@@ -217,8 +217,8 @@ Rate limiting is enforced in the API Gateway layer via `express-rate-limit`.
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/<your-username>/short-term-stay-api.git
-cd short-term-stay-api
+git clone https://github.com/senasliturk/shorttermstayapi.git
+cd shorttermstayapi
 
 # 2. Install dependencies
 npm install
@@ -327,4 +327,4 @@ k6 run load-test/k6/book-stay.js
 
 ## GitHub Repository
 
-[https://github.com/<your-username>/short-term-stay-api](https://github.com/<your-username>/short-term-stay-api)
+[https://github.com/senasliturk/shorttermstayapi](https://github.com/senasliturk/shorttermstayapi)
