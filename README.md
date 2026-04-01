@@ -330,7 +330,7 @@ k6 run load-test/k6/book-stay.js
 
 ## GitHub Repository
 
-[https://github.com/senasliturk/shorttermstayapi](https://github.com/senasliturk/shorttermstayapi)
+[[https://github.com/senasliturk/shorttermstayapi]]
 
 ---
 
