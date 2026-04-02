@@ -289,21 +289,21 @@ Two endpoints were tested using k6: **GET /api/v1/listings/query** (Query Listin
 
 ### Query Listings Results
 
-![Query Listings Load Test Results](docs/screenshots/3.png)
+![Query Listings Load Test Results](docs/screenshots/4.png)
 
 **Average Response Time:** 0.89 ms | **p95:** 1.47 ms | **Requests/sec:** 102.6 | **Error Rate:** 0.00%
 
 ### Book a Stay Results
 
-![Book a Stay Load Test Results](docs/screenshots/1.png)
+![Book a Stay Load Test Results](docs/screenshots/7.png)
 
-![Book a Stay Stress Load](docs/screenshots/4.png)
+![Book a Stay Stress Load](docs/screenshots/1.png)
 
 **Average Response Time:** 1.40 ms | **p95:** 2.05 ms | **Requests/sec:** 84.4 | **Error Rate:** 0.00%
 
 ### k6 Test Script
 
-![Book a Stay k6 Script](docs/screenshots/7.png)
+![Book a Stay k6 Script](docs/screenshots/3.png)
 
 ### Analysis
 
