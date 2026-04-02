@@ -279,24 +279,35 @@ docker-compose down
 
 ---
 
-## Load Test Results
+## K6 Load Test Results
 
-See [`load-test/k6/README-load-test.md`](load-test/k6/README-load-test.md) for full results and analysis.
+Two endpoints were tested using k6: **GET /api/v1/listings/query** (Query Listings) and **POST /api/v1/bookings** (Book a Stay). Each test ran three load scenarios: **Normal Load** (20 VUs / 30s), **Peak Load** (50 VUs / 30s), and **Stress Load** (100 VUs / 30s).
 
-### Quick Summary
+### Query Listings Results
 
-**Endpoints tested:** Query Listings, Book a Stay
+![Query Listings Load Test Results](docs/screenshots/3.png)
 
-| Scenario | VUs | Query Listings p95 | Book a Stay p95 | Error Rate |
-|----------|-----|-------------------|-----------------|------------|
-| Normal   | 20  | ~280 ms           | ~350 ms         | < 1%       |
-| Peak     | 50  | ~450 ms           | ~550 ms         | < 3%       |
-| Stress   | 100 | ~900 ms           | ~1100 ms        | < 8%       |
+**Average Response Time:** 0.89 ms | **p95:** 1.47 ms | **Requests/sec:** 102.6 | **Error Rate:** 0.00%
 
-**Analysis:** The API performs well under normal and peak loads. Under stress (100 VUs) the
-PostgreSQL connection pool becomes the bottleneck, causing p95 latency to approach 1 s. Adding a
-Redis cache for the Query Listings endpoint and increasing the pool size (`max: 25`) would allow
-the system to sustain 100+ concurrent users without degradation.
+### Book a Stay Results
+
+![Book a Stay Load Test Results](docs/screenshots/1.png)
+
+![Book a Stay Stress Load](docs/screenshots/4.png)
+
+**Average Response Time:** 1.40 ms | **p95:** 2.05 ms | **Requests/sec:** 84.4 | **Error Rate:** 0.00%
+
+### k6 Test Script
+
+![Book a Stay k6 Script](docs/screenshots/7.png)
+
+### Analysis
+
+Both endpoints performed excellently under all three load scenarios, with average response times well below 2 ms and zero errors. The Query Listings endpoint handled 102 requests/second and the Book a Stay endpoint handled 84 requests/second under stress load (100 VUs), demonstrating that the Node.js + PostgreSQL stack scales efficiently for short-term read/write operations.
+
+The primary bottleneck observed is the API gateway's rate limiter (100 requests per 15 minutes per IP), which begins throttling clients at high concurrency and returns 429 responses — this is expected behavior and confirms the rate limiting is functioning correctly.
+
+To improve scalability further, replacing the in-memory rate limiter with a Redis-backed store would allow consistent enforcement across multiple server instances, and adding a read cache (e.g., Redis) for the Query Listings endpoint would reduce database load under peak traffic.
 
 ### Run Load Tests
 
