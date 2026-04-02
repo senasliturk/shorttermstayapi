@@ -259,23 +259,27 @@ docker-compose down
 
 ---
 
-## Cloud Deployment
+## Cloud Deployment (AWS)
 
-### AWS App Runner (recommended)
+The backend API was deployed to **AWS Elastic Beanstalk**. After deployment, all endpoints were tested using Postman. The API successfully connected to the **Supabase PostgreSQL** cloud database and performed CRUD operations.
 
-1. Push your code to GitHub.
-2. In AWS Console → App Runner → Create Service → Source: GitHub repository.
-3. Set build command: `npm install` and start command: `node app.js`.
-4. Add all environment variables from `.env.example` under **Environment variables**.
-5. Use **AWS RDS PostgreSQL** (free tier: `db.t3.micro`) for the database.
-6. Run `schema.sql` against your RDS instance using `psql` or pgAdmin.
+The backend API was deployed to AWS Elastic Beanstalk and is accessible via **AWS API Gateway**.
 
-### Azure App Service
+### AWS Elastic Beanstalk
 
-1. In VS Code, install the **Azure App Service** extension.
-2. Right-click your project → **Deploy to Web App** → choose **Free F1** tier.
-3. Set environment variables in App Service → **Configuration → Application settings**.
-4. Use **Azure Database for PostgreSQL** (Flexible Server, Burstable B1ms tier — free for 12 months).
+![AWS Elastic Beanstalk](docs/screenshots/elasticbeanstalk.png)
+
+- **Environment:** Short-term-stay-api-env
+- **Platform:** Node.js 24 on 64bit Amazon Linux 2023
+- **URL:** `http://short-term-stay-api-env.eba-ewbwm4bi.eu-north-1.elasticbeanstalk.com`
+
+### AWS API Gateway
+
+![AWS API Gateway](docs/screenshots/gateway.png)
+
+- **API Name:** short-term-stay-gateway
+- **Stage:** prod
+- **Invoke URL:** `https://saqw7ksaed.execute-api.eu-north-1.amazonaws.com/prod`
 
 ---
 
